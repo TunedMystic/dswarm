@@ -3,6 +3,7 @@ version: '3.4'
 
 services:
   app:
+    image: jsanweb/dswarm-app
     build: ./app
     container_name: app
     networks:
@@ -11,18 +12,14 @@ services:
       - '8000'
     volumes:
       - ./app:/usr/src/app
-    environment:
-      - APP_HOST=0.0.0.0
-      - APP_PORT=8000
-      - GUNICORN_LOGLEVEL=debug
-      - GUNICORN_RELOAD=True
-      - GUNICORN_SYSLOG=False
-      - GUNICORN_WORKER_CLASS=gevent
-      - GUNICORN_WORKERS=4
     command: gunicorn app.main:application -c app/gunicornconfig.py
+    deploy:
+      replicas: 8
 
   nginx:
-    image: nginx:1.13-alpine-perl
+    image: jsanweb/dswarm-nginx
+    build: ./nginx
+    container_name: nginx
     networks:
       - backend
     depends_on:

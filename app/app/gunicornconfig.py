@@ -1,37 +1,17 @@
-import os
-from pathlib import Path
-
-
-def secret(key, default=None):
-    '''
-    Get a secret from the environment or from the filesystem.
-    '''
-    if key in os.environ:
-        return os.environ.get(key)
-    else:
-        secret_file_name = '/run/secrets/{}'.format(key)
-        if os.path.exists(secret_file_name):
-            return Path(secret_file_name).read_text()
-    return default
-
-
 # Gunicorn settings.
 
-HOST = secret('APP_HOST', '0.0.0.0')
+HOST = '0.0.0.0'
 
-PORT = secret('APP_PORT', 8000)
+PORT = 8000
 
 bind = '{}:{}'.format(HOST, PORT)
 
-loglevel = secret('GUNICORN_LOGLEVEL', 'info')
+loglevel = 'debug'
 
-reload = secret('GUNICORN_RELOAD', True) in [True, 'True']
+reload = True
 
-syslog = secret('GUNICORN_SYSLOG', True) in [True, 'True']
+syslog = False
 
-worker_class = secret('GUNICORN_WORKER_CLASS', 'gevent')
+worker_class = 'gevent'
 
-try:
-    workers = int(secret('GUNICORN_WORKERS', '2'))
-except (TypeError, ValueError):
-    workers = 1
+workers = 4
