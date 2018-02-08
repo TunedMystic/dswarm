@@ -13,8 +13,6 @@ services:
     volumes:
       - ./app:/usr/src/app
     command: gunicorn app.main:application -c app/gunicornconfig.py
-    deploy:
-      replicas: 8
 
   nginx:
     image: jsanweb/dswarm-nginx
