@@ -1,0 +1,37 @@
+version: '3.4'
+
+
+services:
+  app:
+    build: ./app
+    container_name: app
+    networks:
+      - backend
+    ports:
+      - '8000'
+    volumes:
+      - ./app:/usr/src/app
+    environment:
+      - APP_HOST=0.0.0.0
+      - APP_PORT=8000
+      - GUNICORN_LOGLEVEL=debug
+      - GUNICORN_RELOAD=True
+      - GUNICORN_SYSLOG=False
+      - GUNICORN_WORKER_CLASS=gevent
+      - GUNICORN_WORKERS=4
+    command: gunicorn app.main:application -c app/gunicornconfig.py
+
+  nginx:
+    image: nginx:1.13-alpine-perl
+    networks:
+      - backend
+    depends_on:
+      - app
+    ports:
+      - '80:80'
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+
+
+networks:
+  backend:
