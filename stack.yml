@@ -1,0 +1,26 @@
+version: '3.4'
+
+
+services:
+  app:
+    image: jsanweb/dswarm-app
+    networks:
+      - backend
+    ports:
+      - '8000:8000'
+    command: gunicorn app.main:application -c app/gunicornconfig.py
+    deploy:
+      replicas: 3
+
+  # nginx:
+  #   image: jsanweb/dswarm-nginx
+  #   networks:
+  #     - backend
+  #   depends_on:
+  #     - app
+  #   ports:
+  #     - '80:80'
+
+
+networks:
+  backend:
